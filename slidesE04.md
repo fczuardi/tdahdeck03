@@ -1,6 +1,6 @@
 # choo
 #### TDAH Talks S01E04 - São Carlos, Agosto 2016
-##### Fabricio C Zuardi
+##### Fabricio C Zuardi 🚂🚋🚋🚋
 
 ---
 # Front-end hoje
@@ -36,6 +36,19 @@
 - Useful concepts from flux/elm-architecture/redux/react-router organized in a small API (6 methods)
 - transparent side-effects
 - minimal tooling (browserify)
+
+---
+# choo (ascii-art)
+
+```
+ ┌─────────────────┐
+ │  Subscriptions ─┤     User ───┐
+ └─ Effects  ◀─────┤             ▼
+ ┌─ Reducers ◀─────┴──Actions── DOM ◀┐
+ │                                   │
+ └▶ Router ─────State ───▶ Views ────┘
+ ```
+<center><small>é um tremzinho!</small></center>
 
 ---
 # Exemplo
