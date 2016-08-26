@@ -40,7 +40,7 @@
 ---
 # choo (ascii-art)
 
-```
+```text
  ┌─────────────────┐
  │  Subscriptions ─┤     User ───┐
  └─ Effects  ◀─────┤             ▼
@@ -176,7 +176,7 @@ document.body.appendChild(tree)
 ```
 ---
 # Obrigado
-## Referencias:
+## Referências:
 - https://github.com/yoshuawuyts/choo
 - https://facebook.github.io/react/index.html
 - http://redux.js.org/
