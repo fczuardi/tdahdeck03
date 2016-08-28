@@ -1,6 +1,6 @@
-# choo
+# choo  🚂🚋🚋🚋
 #### TDAH Talks S01E04 - São Carlos, Agosto 2016
-##### Fabricio C Zuardi 🚂🚋🚋🚋
+##### Fabricio C Zuardi
 
 ---
 # Front-end hoje
@@ -16,7 +16,7 @@
 ## the good parts
 - JSX
 - testeable pieces
-- help bringing functional proggraming to mainstream / hype
+- help bringing functional programming to mainstream / hype
 - redux
 
 ## the bad parts
@@ -119,12 +119,12 @@ const nextTDAH = state => html`
 # Reducers
 
 ```javascript
-const addTalk = (state, data) => ({
+const addTalk = (data, state) => ({
     ...state,
     talks: [
         ...state.talks,
         {
-            title: data.title, 
+            title: data.title,
             author: data.author
         }
     ]
@@ -132,7 +132,7 @@ const addTalk = (state, data) => ({
 ```
 
 ```javascript
-const removeTalk = (state, data) => ({
+const removeTalk = (data, state) => ({
     ...state,
     talks: [
         ...state.talks.slice(0, data.index),
@@ -141,7 +141,7 @@ const removeTalk = (state, data) => ({
 });
 ```
 ```javascript
-const replaceTalks = (state, data) => 
+const replaceTalks = (data, state) => 
     ({...state, talks: data.talks });
 ```
 ---
@@ -187,32 +187,25 @@ document.body.appendChild(tree)
 ---
 # Effects
 ```javascript
-const saveList = (data, state, send, done) => {
+const saveList = (data, state, send, done) =>
     fetch('/talks', {
-      method: 'POST',
-      headers: {
+        method: 'POST',
+        headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({talks: state.talks})
-    }).then(done);
-}
-```
+        },
+        body: JSON.stringify({talks: state.talks})
+    })
+    .then(done)
+    .catch(done);
+   ```
 ---
 # Subscriptions
 ```javascript
-const loadList = (send, done) => {
-    fetch('/talks', {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({talks: state.talks})
-    }).then(data => {
-        send('replaceTalks', {talks: data.talks});
-        done();
-    });
-}
+const loadList = (send, done) =>
+    fetch('/talks')
+    .then(data => 
+        send('replaceTalks', {talks: data.talks}, done))
+    .catch(done);
 ```
 
