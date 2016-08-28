@@ -15,7 +15,7 @@
 # React
 ## the good parts
 - JSX
-- testeable pieces
+- testable/reusable pieces
 - help bringing functional programming to mainstream / hype
 - redux
 
@@ -106,7 +106,7 @@ const talkList = talks => html`
 # View
 
 ```javascript
-const nextTDAH = state => html`
+const nextTDAH = (state, prev, send) => html`
 <div>
     <h1>Próximo TDAH</h1>
     ${dayLabel(state.day)}
@@ -114,7 +114,31 @@ const nextTDAH = state => html`
     ${talkList(state.talks)}
 </div>`;
 ```
-
+# Routes
+```javascript
+const routes = [
+    ['/', nextTDAH]
+];
+```
+---
+# Model
+```javascript
+const tdahModel = {
+    state: exampleState,
+    reducers: {},
+    effects: {},
+    subscriptions: {}
+}
+```
+# App
+```javascript
+const choo = require('choo');
+const app = choo();
+app.model(tdahModel);
+app.router(routes);
+const tree = app.start();
+document.body.appendChild(tree)
+```
 ---
 # Reducers
 
@@ -140,40 +164,59 @@ const removeTalk = (data, state) => ({
     ]
 });
 ```
-```javascript
-const replaceTalks = (data, state) => 
-    ({...state, talks: data.talks });
-```
 ---
-# Model
+# Main model with reducers
 ```javascript
 const tdahModel = {
     state: exampleState,
     reducers: {
         addTalk,
-        removeTalk,
-        replaceTalks
+        removeTalk
     },
-    effects: {
-        saveList
-    },
-    subscriptions: {
-        loadList
-    }
+    effects: {},
+    subscriptions: {}
 }
 ```
 ---
-# App
+# Add talk component
 ```javascript
-const choo = require('choo');
-const app = choo();
-app.model(tdahModel);
-app.router([
-    ['/', nextTDAH]
-]);
-const tree = app.start();
-document.body.appendChild(tree)
+const addTalkForm = submitHandler => html`
+<form onsubmit=${submitHandler}>
+    <input
+        name="title"
+        placeholder="Tema"
+    />
+    <input
+        name="author"
+        placeholder="Autor"
+    />
+    <input
+        type="submit"
+        value="Reservar meu lugar na fila"
+    />
+</form>`;
 ```
+---
+# Main view with add talk form
+```javascript
+const nextTDAH = (state, prev, send) => html`
+<div>
+    <h1>Próximo TDAH</h1>
+    ${dayLabel(state.day)}
+    <h3>Temas</h3>
+    ${talkList(state.talks)}
+    <h3>Add a new Talk</h3>
+    ${addTalkForm(e => { 
+    	e.preventDefault();
+        send('addTalk', {
+            title: e.target.title.value,
+            author: e.target.author.value
+        });
+    )}
+</div>`;
+```
+a função ```send``` é usada para enviar **action** de nome ```addTalk```
+
 ---
 # Obrigado
 ## Referências:
@@ -182,9 +225,54 @@ document.body.appendChild(tree)
 - http://redux.js.org/
 - http://guide.elm-lang.org/architecture/
 
-(tem mais 2 slides extras)
+(remove, effects e subscription ficam como exercício)
 
 ---
+
+---
+# Remove talk component
+```javascript
+const removeTalkForm = submitHandler => html`
+    <form onsubmit=${submitHandler}>
+        <input
+            name="index"
+            placeholder="index 0 é o do topo"
+        />
+        <input
+            type="submit"
+            value="Remover Talk"
+        />
+    </form>
+`;
+```
+---
+# Main view
+```javascript
+const nextTDAH = (state, prev, send) => html`
+<div>
+    <h1>Próximo TDAH</h1>
+    ${dayLabel(state.day)}
+    <h3>Temas</h3>
+    ${talkList(state.talks)}
+    <h3>Add a new Talk</h3>
+    ${addTalkForm(e => { 
+    	e.preventDefault();
+        send('addTalk', {
+            title: e.target.title.value,
+            author: e.target.author.value
+        });
+    )}
+    <h3>Remove a Talk</h3>
+    ${removeTalkForm(e => { 
+    	e.preventDefault();
+        send('removeTalk', {
+            index: parseInt(e.target.index.value)
+        });
+    )}
+</div>`;
+```
+---
+
 # Effects
 ```javascript
 const saveList = (data, state, send, done) =>
@@ -208,4 +296,3 @@ const loadList = (send, done) =>
         send('replaceTalks', {talks: data.talks}, done))
     .catch(done);
 ```
-
